@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PlagiaScan – Online Plagiarism Checker</title>
+<meta name="theme-color" content="#0b1020">
+<link rel="icon" type="image/x-icon" href="/static/favicon.ico?v=3">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#070f1e;--card:#101a2d;--ink:#f2f4f8;--mute:#d8bf7b;--line:rgba(182,199,225,.16);--navy:#070f1e;--b:#a9c8ee;--p:#d8bf7b;--gold:#d8bf7b;--gold-light:#f0dfa9;--heading-gradient:linear-gradient(105deg,#f4f6ff 0%,#dce8ff 28%,#14c8ed 58%,#4c7dff 100%);--grad:linear-gradient(135deg,#d8bf7b,#f0dfa9);--ok:#74c9a6;--warn:#e5bd69;--bad:#e58f8f;--hl:rgba(205,113,113,.22);--shadow:0 18px 50px rgba(0,0,0,.22);color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}html{scroll-padding-top:110px;scroll-behavior:smooth}
+body{margin:0;min-height:100vh;font-family:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:14px;background-image:linear-gradient(rgba(97,139,170,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(97,139,170,.055) 1px,transparent 1px),radial-gradient(circle,rgba(19,196,225,.56) 1px,transparent 2px),radial-gradient(circle,rgba(19,196,225,.35) 1px,transparent 2px),radial-gradient(ellipse at 85% 4%,rgba(32,83,119,.13),transparent 36%);background-size:48px 48px,48px 48px,277px 231px,389px 317px,auto;background-position:0 0,0 0,37px 24px,142px 103px,0 0;background-color:var(--bg);color:var(--ink)}
+button,input,textarea{font:inherit}
+.topbar{width:min(1360px,calc(100% - 48px));min-height:82px;margin:18px auto 0;padding:12px 18px;position:sticky;top:12px;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:24px;border:1px solid rgba(202,211,239,.16);border-radius:24px;background:rgba(29,34,72,.72);box-shadow:0 16px 48px rgba(0,0,0,.2);backdrop-filter:blur(22px)}
+.brand-area{display:flex;align-items:center;gap:14px;min-width:0}
+.brand-logo{display:block;width:64px;height:64px;flex:none;object-fit:contain}
+.brand-divider{width:1px;height:38px;background:var(--line)}
+.brand-title{font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase}
+.brand-caption{display:block;margin-top:4px;color:var(--mute);font-size:9px;font-weight:500;letter-spacing:.13em;text-transform:uppercase}
+.topnav{display:flex;align-items:center;gap:4px}
+.nav{position:relative;display:flex;align-items:center;gap:4px;padding:9px 12px 11px;border:1px solid transparent;border-radius:0;background:transparent;color:#c1c8d8;font-size:12px;font-weight:500;white-space:nowrap;cursor:pointer;transition:color .2s}
+.nav:after{content:"";position:absolute;left:12px;right:12px;bottom:5px;height:2px;background:linear-gradient(90deg,#14c8ed,#8b5cf6);transform:scaleX(0);transform-origin:left;transition:transform .24s ease}
+.nav:hover,.nav.on,.nav:focus-visible{border-color:transparent;background:transparent;color:#f2f4f8}
+.nav:hover:after,.nav.on:after,.nav:focus-visible:after{transform:scaleX(1)}
+main{width:min(1200px,calc(100% - 48px));min-width:0;margin:0 auto;padding:42px 0 72px}
+h1,h2,h3,h4,h5,h6{margin-top:0;font-family:"Cinzel",Georgia,serif;background:var(--heading-gradient);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+h1{margin-bottom:8px;font-size:clamp(26px,3.1vw,38px);line-height:1.2;font-weight:600;letter-spacing:-.035em}
+h2{margin-bottom:12px;font-size:17px;font-weight:600;letter-spacing:-.02em}
+.modify-heading{font-size:clamp(24px,3vw,34px);line-height:1.3;letter-spacing:0;background:none;color:var(--gold-light);-webkit-text-fill-color:var(--gold-light)}
+.modify-heading span{color:#6ee7f9;-webkit-text-fill-color:#6ee7f9}
+.sub{color:var(--mute);margin:0 0 24px;line-height:1.75}
+.view>h1{font-size:clamp(23px,2.8vw,31px);font-weight:600;letter-spacing:.025em}
+.grid{display:grid;gap:18px}.g4{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}.g2{grid-template-columns:1fr 1fr}
+.card{background:linear-gradient(145deg,rgba(42,59,86,.48),rgba(14,25,44,.58));border:1px solid rgba(202,218,244,.19);border-radius:22px;padding:24px;box-shadow:var(--shadow),inset 0 1px 0 rgba(255,255,255,.07);backdrop-filter:blur(20px) saturate(135%);-webkit-backdrop-filter:blur(20px) saturate(135%);transition:transform .25s,border-color .25s,box-shadow .25s}
+.card.lift:hover{transform:translateY(-3px);border-color:rgba(216,191,123,.3);box-shadow:0 22px 54px rgba(0,0,0,.3)}
+.stat .ico{width:42px;height:42px;border:1px solid rgba(216,191,123,.26);border-radius:13px;background:rgba(216,191,123,.1);display:grid;place-items:center;color:var(--gold-light);margin-bottom:15px;font-size:18px}
+.stat b{font-size:30px;display:block;letter-spacing:-.04em}.stat span{color:var(--mute);font-size:13px}
+.hero{position:relative;overflow:hidden;min-height:290px;background:radial-gradient(ellipse at 84% 20%,rgba(123,89,161,.3),transparent 38%),linear-gradient(120deg,rgba(16,36,57,.76) 0%,rgba(26,35,69,.72) 55%,rgba(41,35,72,.72) 100%);color:#fff;border:1px solid rgba(181,193,227,.24);box-shadow:var(--shadow),inset 0 1px 0 rgba(255,255,255,.09);backdrop-filter:blur(24px) saturate(145%);-webkit-backdrop-filter:blur(24px) saturate(145%);display:flex;justify-content:space-between;align-items:center;gap:32px;flex-wrap:wrap;margin-bottom:20px;padding:clamp(28px,5vw,56px)}
+.hero:after{content:"";position:absolute;width:270px;height:270px;right:9%;top:50%;transform:translateY(-50%);border:1px solid rgba(216,191,123,.16);border-radius:50%;box-shadow:0 0 0 32px rgba(216,191,123,.025),0 0 0 66px rgba(216,191,123,.02);pointer-events:none}
+.hero-copy{position:relative;z-index:1;max-width:670px}
+.eyebrow{display:inline-flex;align-items:center;gap:9px;margin-bottom:17px;color:var(--gold-light);font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase}
+.eyebrow:before{content:"";width:22px;height:1px;background:var(--gold)}
+.hero h1{max-width:650px;margin-bottom:12px;font-size:clamp(27px,3.6vw,41px);font-weight:600;letter-spacing:.015em}
+.hero p{max-width:590px;margin:0;color:#d0d5e4;font-size:13px;line-height:1.8}
+.hero-actions{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-top:25px}
+.hero-note{color:var(--mute);font-size:11px}
+.hero-meta{position:relative;z-index:1;display:grid;gap:10px;min-width:185px;padding:18px 20px;border:1px solid rgba(227,229,246,.2);border-radius:17px;background:rgba(7,14,31,.24);box-shadow:inset 0 1px 0 rgba(255,255,255,.08);backdrop-filter:blur(16px) saturate(135%);-webkit-backdrop-filter:blur(16px) saturate(135%)}
+.hero-meta strong{font-family:"Cinzel",Georgia,serif;color:var(--gold-light);font-size:15px;font-weight:600;letter-spacing:.08em}
+.hero-meta span{color:var(--mute);font-size:9px;letter-spacing:.13em;text-transform:uppercase}
+.btn{border:1px solid transparent;border-radius:10px;padding:12px 19px;font:600 13px "Inter",sans-serif;cursor:pointer;background:var(--grad);color:#172033;transition:transform .2s,box-shadow .2s,background .2s;box-shadow:0 8px 22px rgba(216,191,123,.18)}
+.btn:hover{transform:translateY(-2px);box-shadow:0 12px 26px rgba(216,191,123,.25)}
+.btn:disabled{opacity:.6;cursor:wait;transform:none}
+.btn.w{background:var(--grad);color:#172033;box-shadow:0 8px 22px rgba(216,191,123,.18)}
+.btn.o{background:rgba(255,255,255,.025);color:var(--ink);border-color:var(--line);box-shadow:none}
+.btn.o:hover{border-color:rgba(216,191,123,.45);background:rgba(216,191,123,.07)}
+table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:12px 10px;border-bottom:1px solid var(--line);font-size:12px}
+th{color:var(--mute);font-weight:600;font-size:9px;text-transform:uppercase;letter-spacing:.12em}tbody tr{transition:background .2s;cursor:pointer}tbody tr:hover{background:rgba(216,191,123,.045)}
+.tag{padding:5px 10px;border-radius:99px;font-size:10px;font-weight:700;letter-spacing:.04em}
+.t-ok{background:rgba(116,201,166,.14);color:#91dabb}.t-w{background:rgba(229,189,105,.14);color:#f0cf82}.t-b{background:rgba(229,143,143,.14);color:#f0a2a2}
+.bar{height:7px;border-radius:9px;background:rgba(255,255,255,.1);overflow:hidden;min-width:70px}.bar i{display:block;height:100%;background:var(--grad);border-radius:9px;transition:width 1s}
+.drop{border:1px dashed rgba(216,191,123,.55);border-radius:16px;padding:30px;text-align:center;cursor:pointer;transition:background .2s,border-color .2s,transform .2s;background:rgba(216,191,123,.055);box-shadow:inset 0 1px 0 rgba(255,255,255,.05);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.drop:hover,.drop.over{background:rgba(216,191,123,.09);border-color:var(--gold-light);transform:translateY(-2px)}
+.drop-icon{width:42px;height:42px;margin:0 auto 12px;display:grid;place-items:center;border:1px solid rgba(216,191,123,.35);border-radius:13px;color:var(--gold-light);font-size:25px}
+textarea,input[type=text],input[type=email],input[type=tel],input[type=password],input[type=file]{width:100%;border:1px solid var(--line);border-radius:11px;padding:12px;font:14px/1.65 "Inter",sans-serif;background:rgba(7,14,28,.55);color:var(--ink);resize:vertical;min-height:170px;transition:border-color .2s,box-shadow .2s}
+input[type=text],input[type=email],input[type=tel],input[type=password],input[type=file]{min-height:0}input[type=file]{font-size:13px}
+textarea::placeholder,input::placeholder{color:#77839a;opacity:1}
+textarea:focus,input:focus{outline:none;border-color:rgba(216,191,123,.7);box-shadow:0 0 0 3px rgba(216,191,123,.1)}
+label{font-weight:600;font-size:13px;display:block;margin:0 0 8px}
+.tabs{display:flex;gap:7px;margin-bottom:12px}.tabs button{border:1px solid var(--line);background:rgba(255,255,255,.02);color:var(--mute);padding:8px 14px;border-radius:9px;cursor:pointer;font:500 12px "Inter",sans-serif;transition:.2s}.tabs button.on{background:rgba(216,191,123,.12);color:var(--gold-light);border-color:rgba(216,191,123,.36)}
+.gauge{width:180px;height:180px;border-radius:50%;display:grid;place-items:center;margin:auto;transition:.6s}
+.gauge div{width:136px;height:136px;border:1px solid var(--line);border-radius:50%;background:#111b30;display:grid;place-items:center;text-align:center}
+.gauge b{font-size:38px;line-height:1}.gauge span{font-size:12px;color:var(--mute)}
+.txt{font-size:14px;line-height:1.85;max-height:380px;overflow:auto;white-space:pre-wrap}
+mark{background:var(--hl);color:inherit;border-bottom:2px solid var(--bad);border-radius:3px;padding:1px 2px;cursor:help}
+.match{border:1px solid rgba(202,218,244,.1);border-left:2px solid var(--gold);padding:12px 15px;margin-bottom:10px;background:rgba(255,255,255,.045);border-radius:0 11px 11px 0;box-shadow:inset 0 1px 0 rgba(255,255,255,.035);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);font-size:13px;transition:background .2s,transform .2s}.match:hover{transform:translateX(3px);background:rgba(255,255,255,.075)}
+.match small{color:var(--mute);display:block;margin-top:5px;font-size:11px;line-height:1.6}
+.site-footer{width:100%;min-height:76px;margin:0;padding:20px max(24px,calc((100% - 1192px)/2));display:flex;justify-content:space-between;align-items:center;gap:16px;border:0;border-top:1px solid rgba(202,218,244,.14);border-radius:0;background:linear-gradient(105deg,rgba(7,12,25,.96),rgba(7,27,34,.96));color:#a7adba;font-size:11px;line-height:1.5}
+.footer-links{display:flex;align-items:center;gap:26px}
+.footer-links span{white-space:nowrap}
+.modal{position:fixed;inset:0;background:rgba(3,7,17,.76);display:none;place-items:center;padding:20px;z-index:50;backdrop-filter:blur(8px)}.modal.on{display:grid;animation:f .25s}
+.modal .card{max-width:640px;width:100%;max-height:85vh;overflow:auto}
+.view{display:none}.view.on{display:block;animation:up .35s ease}
+@keyframes up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}@keyframes f{from{opacity:0}}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(23,32,51,.25);border-top-color:#172033;border-radius:50%;animation:s .7s linear infinite;vertical-align:-2px;margin-right:6px}@keyframes s{to{transform:rotate(360deg)}}
+.scan-stage{display:none;align-items:stretch;flex-direction:column;gap:16px;margin-top:18px;padding:20px;border:1px solid rgba(20,200,237,.22);border-radius:16px;background:radial-gradient(ellipse at 30% 50%,rgba(20,200,237,.12),transparent 48%),linear-gradient(120deg,rgba(5,15,29,.92),rgba(8,21,38,.78));overflow:hidden}
+.scan-stage.active{display:flex;animation:up .35s ease}
+.scan-copy{position:relative;z-index:1}
+.scan-heading{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.scan-copy strong,.scan-percent{color:#eaf7ff;font-size:13px;font-weight:700;letter-spacing:.08em}
+.scan-percent{font-variant-numeric:tabular-nums}
+.scan-copy p{margin:8px 0 0;color:#aabed0;font-size:12px;line-height:1.7}
+.scan-track{height:28px;margin-top:12px;padding:3px;border:2px solid rgba(234,247,255,.92);background:rgba(0,0,0,.32);box-shadow:0 0 14px rgba(20,200,237,.12);overflow:hidden}
+.scan-progress{width:0;height:100%;background:repeating-linear-gradient(90deg,#eaf7ff 0 14px,transparent 14px 20px);transition:width .25s ease-out}
+@media(max-width:1000px){.topbar{align-items:flex-start;flex-wrap:wrap;gap:8px 16px}.brand-area{flex:1}.topnav{order:3;width:100%;overflow-x:auto}.topnav .nav{flex:1;justify-content:center}}
+@media(max-width:680px){.topbar{width:calc(100% - 24px);top:6px;margin-top:8px;padding:10px;border-radius:17px}.brand-logo{width:54px;height:54px}.brand-divider{display:none}.brand-title{font-size:10px}.brand-caption{font-size:9px}.topnav{gap:2px}.topnav .nav{padding:9px 10px;font-size:11px}.nav:hover{transform:none}main{width:calc(100% - 28px);padding:27px 0 52px}.site-footer{min-height:72px;padding:16px 18px;align-items:flex-start;flex-direction:column;gap:10px}.footer-links{gap:18px;flex-wrap:wrap}.g2{grid-template-columns:1fr}.g4{grid-template-columns:repeat(2,minmax(0,1fr))}.card{padding:18px;border-radius:17px}.hero{min-height:0;padding:27px 21px}.hero:after{right:-135px}.hero-meta{width:100%;grid-template-columns:1fr auto;align-items:center}.hero-meta span{grid-column:1}.tw{overflow-x:auto}table{min-width:540px}.scan-stage{gap:12px;padding:15px}.scan-copy p{font-size:11px}}
+@media(max-width:380px){.g4{grid-template-columns:1fr}.brand-caption{letter-spacing:.06em}.topnav .nav{padding:8px 7px;font-size:10px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
+@media print{.topbar,.site-footer,.noprint{display:none!important}body{background:#fff;color:#111}.modal{position:static;display:block;background:none}.card{background:#fff;color:#111;box-shadow:none;border:1px solid #bbb}.sub,.match small{color:#555}}
+</style></head><body>
+<header class="topbar">
+ <div class="brand-area">
+  <img class="brand-logo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAABICAMAAABiM0N1AAABgFBMVEUBAAFubm6jpKNrViKfoqKjpqahYyNpaBbtnRllXxrr7ewfWJnlYwyXYyLa398iU2b82V6fYRgLI2UWV5OoJgmdoqIGIFtgbmmcYh2inR305ZrZ2dlaX2PR0tNukRZmLBfOpRUaExkIESdylxKoo19adJELLFfSpVNiaWMUW6AYX2Wknxqlj1trlhPLpV9wkxVsVyaxkloeUmtli6ZbLRD9zywCZtRjotCUdlHpEAAKmfAKOY2gblkLMWOdmiQDNJIYYaZhoaHkagSQoR0EL6idcUlrkJXUMwHh9qYHDBstUW9fMg9acIxZjGD5+QqetdGrlWa01OP+q1dyhpUCc/ZYY5ny8G6XIQItWAvSnFYTzf5wfYKZeEcuVBYviZ3MaAjpqyrDuJ0A///NjCaYMwD/f3+o09Qkoqs2iXLPZg6e5KgAAPRjh2V43uadpeJmuPNclWX30GEHOZeZ2gIbm+ew1AZ/f/8GZMwck8WyuMpDns+4vcBDODi8wMM1hbZewNK+zEkFAAAAgHRSTlMBDh6eXJ/pFvlgEen6q+dl/FwWX/zZ+F4hpPdd7KBfGJ5Y6dcQ51/2maMaG6QkqJ3S85jxWff5/aMJ+aISmeb0ERUQWBDdXf0PnN6SnZ8J6FzvCZsIEA4nVVr9Y2Efl6AT2AFmZwIeGHBjCQFoGA4FKFZeDaX6AlssTkSR36jh/7iYZGQAAAo1SURBVHjavZjnY9NIE8ZH3ZIsC9k4cndkW+4+V5I4sR2nkgrJhST0UI7OAcf1/q+/z8oJOJAAx4f3AVursr/M7syOZk30GS28fs2xY+Sgkqav1/cv2PcvpIxOua9h7A+H18pA7e3ZDGDIhkqkpf+rWeXR4Y9/9FaxbZMiy4Igyyp9BeaPu3fvzup5tMw2RQV2WRgYm6RFlC+kBINBopCut8yya1ILrDYnp8UZUfzdkWOy98wXs3TdYceiXdZ3+1fabwaKyESbhYFsKV+EgjX9vK7Pha5hitsu5TeIdCfKSZJIdFtwHEOGhC/xoB6Y7VPwbSlEzm6b1orU2t0wxCRAqkCa9wjm3fksSdfbffrjp5+GpVKwpdPCFrWmW1FuYXXzfoPi96VknMGMgUOfioTvydVxyJWmZjHhJWfDJJEn/U6U9lc7MUETpXAgEKBkHEZ9an40MhmHZqempvQLmjm90Qo9kvgSZxBmGvOfDItiMiAFAhrJDUc7Z8Yx6C23D4foU7quVy/8QNPTdMvmRIB4kVbSxAeS7DlJknjajK2c4ztEoYugUTian7/EtHTPaZWoeAugI/G1vUJaMsDzvKYFwiI96DQHA5VyZ/pdx7gU1bgXbF265PNNsqtmyVwVS46xg6E93hWlOPyWDAR47eAJkTpYOoM0mueIZR1ZdM93yRelhw+DG9QyV1fnVEFdfUwSR/EkQIGARNo+8eIrOsOmIOY5XyLLMI6ot2xNGpHckU8NmWYoFJrjKt+Zvx2qxGNuCJ7D8Gopnn9FlD1jlvQ+c1nnu+9OLnQPjcXV4mqxuLWzc/vlS4NrcTxpf8NrPHE/1tQltVLL1qnygcc8x2vxuChhUeHmA5jSTdOkpyg0mTfxAC9JYWYXwttSFUXNBq+cAg2pNEdDjU+Gw0ksKpo8StummZfC4fsx6H4sfD/czrc2iLex6nhNFQRBXaqkrmfpNOgBwfNwHEIkyYviI7+/Y0V+mAkXt7YSrpvY29pyE+FqNU+/X70avnqVFKhSURXKnk52GpZqn17xWANsZPwosAYzUgaagBChE24VEVHPZgfZQd1LJHainBaywinHpbFUNY1BGIm/FxEsS52s7oETDiQmJjYCpLvVKONAg0FKERpkvmi1Gg5senOC+aVb6rMj4pYX8Qn6/aSqarTKLIoF7mcmMoHwRLgaTaspoeaJ7ODL7erdJ/YrTNP7GArNM49px+cRv2X5Gx11kg0tEWvGGK7JQJ2IlSZMsqAOzbvbNre9ffcNYXDH0XRtETMdR36AMTCL0s+o+4x+W5g0qplMMybEEgyUkaKTnUjlym2hoqRJMJ8+pUvK9pOirZ54rkxDxFAAXteSST6OxnIrOFwImZPGTCZzoelcKLBDpgqQVcnZaqViKYL99OlDX2X7iapS9l0MheYAwnp8HAiwdFMut4LlEAMVMw3foOnzZTI+eX3GiKqVKxV1U6kICr1sbb9UMLTy+3USZKB9cXf3KrcAs/A/3zLNDTMPkCP7Bj4ZlBEIT+e39rbwtvvRDr7Zrm6/NsuUGtwZt4g4kRstlrKJf2VHiEwaguNjKVUeqCOQQu5VJhc5RHjaCpItKAfZ7Dun5fV+eRik8hNkAI7yfZFN2GYHINtnsAXjq/rkjGBE0057mqmdj9YUMotlBHhUrR9PdpD6u9PzJaZ/EN/83yzBJ5OPy1HDe1OT97JcXxfkaPCOR2qvUzZbI+89Uk8BVBuBXrDcGGJNZCQqAsNQRSzwRhFy20VPDbWDgTsu42hUq7OUEK2n2HI7iSOaw4SXTjJKWJLiUjJgIzCERkOQq9UVQ2arnQSBejC/T2sYjFL7ERGukPo+AVyjUh7jm27x+3Fe3A3/CRoSs5dOxnRoUJqt9XXEdl1NpVJCNJrynH+SJpep1A+a1O4jupNIQZJGj3EQmk2yTFU1TdXCylPLloFMbMkFJ6UOfoaF6s8/R5frJzPEijNUMYREL4YlJGTbRQJAHlSpuUKNuZKA0FTpTirlvRoMMppY0NFoI9YQonVhnIO0lsZiawV5vK+k8C034bZdF3Ua0nfnbcmk7+3NlKCkRh0OOw7LDHcaBeH6ekNQP0i0MAn52N3bc91esZhIJIqJHre1VfpVn1sWV4WmkKorsCmVqqtygVL1BpZ8zYkNlA9yP6abkWy3nbhlmmS7NnWHYDjrc2/zAKFQS6nor9ZStc4mXWe6U8s2hQ84XgSwetFxcsTKxnus+ENjpUA/4V27f7FDlBIEFoSYraWlJfisjhA6Q0PKz+t9t50PHUsP0gNVXqFfQ6b9mxFBCDZjTr1GTWIghjqnphkirvvT0xNzx8o7HUslc2GhVS79eoRQHCJLY2UgJk6knFs9YmjvTp0CethFVBGhkCEPVYv1rNfZ4PAigj5RjgZh1YNlT8FrtCKTgoRiXrOPjOUQFUO1VLb+2QpUWYD4UcHP2hxb2FquZbaCz/zW21AoODVbryvEtja9b5ly7MPUPbtm+6h4X+4eYtTLVA59vj7nqCcxifSctausfVupfjNS1RPepsdXet+cVm/s73NpY/rmzZv/3sDbt6cY/968SR1OiJ2S9ILbLMRiBStduDCuQociY360ZqGbbZDQBjRxSMqF2HiHmEgMUaDICOSVmZdQ2nXGwoB1ZqRZkHr0DG2ALNatgYRmGA3WN+ohfOm1piz7Zdnn88mexkERujE9NeWRviXtBgN1aamAP3hcvhkwwAAIV9K5HcL2z2AgdkuNjIFy9IM7NZXQUaeHD+hGG+0u7fhgt/X4+XN6nmuiuUk5dPZFRmXQO9ApMZA+lWiMSDdcD0SsW2GkUS++4IHusQ5Rn38EiozHUY9uuPN6Im2wmj/8kEE9i8a1onkgf4QWiQ4o6vf7P7YoQg/d+fnE4qGsz8/rKzqgi7TkPyWfhKHh6E1Jj4zzQIkJgCiywkj4bHTJYt03O0xOg7UrEfad/hQI7kd514DNkcQ8KxnnJxZHIGv0gOohFNbZe/ksAnSZgT5YaOkTUMRrQMRAly/7rbWDNajKuqUV+fJlOfIOdPks0O0ND9SN0DOP9BdA8sWLF1dWms1CoYle6BZ5B3qkGbiJ9segicxEo4vrxzb91aUKA72XbAGEwyLz2iPyQB9ZxPVmEpmJxG08cExK7PRmToHkbyhXZaAdLUdcN9dk13ZYh9NpZMaYgQ40jl/jyUJzJzcjjAkLgXDFMIyZHK3lCHUFa5N27mbUi/9P65exDtp5D2N7hAjG1xVN43ppfMV5nMbXFFzHTeqha5x7jku9s21hRf/vPCWT2Irjg80m2wezEw0VMyg4BuLJJDaiuBMPJNmmlHXiuA9A2Ib8KWJ7KEkkrXJhjg+jehclHIjCeELi+TAn4iYKFmK7Np739j/n/CAh3rLxu9OeZBNfXF0lzhZt0jSb0+jWAtnSHkc2F8RNPMafPTSMjeM1+k9iI9POsYiD2Nc+veDYDpbjFo69uX9yU2OnHPdVv7f9P/U/BciMFF+Z+ZQAAAAASUVORK5CYII=" alt="NBITS Solutions">
+  <div class="brand-divider" aria-hidden="true"></div>
+  <div><div class="brand-title">PlagiaScan</div><span class="brand-caption">Academic integrity suite</span></div>
+ </div>
+ <nav class="topnav" id="topNav" aria-label="Main navigation">
+  <button class="nav on" data-v="dash">Dashboard</button>
+  <button class="nav" data-v="check">Check plagiarism</button>
+  <button class="nav" data-v="results">Results</button>
+  <button class="nav" data-v="hist">History</button>
+  <button class="nav" data-v="about">About</button>
+  <button class="nav" data-v="contact">Contact</button>
+  <button class="nav" id="userLogout" type="button" style="display:none">Logout</button>
+ </nav>
+ <button class="btn o" id="exitAdmin" type="button" style="display:none;padding:9px 13px">Back to user page</button>
+</header>
+<main>
+<section class="view" id="authPage">
+ <div class="card" style="max-width:520px;margin:0 auto">
+  <span class="eyebrow" id="authEyebrow">PlagiaScan account</span>
+  <h1 id="authTitle">Login</h1>
+  <p class="sub" id="authDescription"></p>
+  <form id="authForm"></form>
+  <p id="authMessage" role="status" aria-live="polite" style="margin:14px 0 0"></p>
+  <div id="authLinks" style="margin-top:16px;color:var(--mute)"></div>
+ </div>
+</section>
+<section class="view on" id="dash">
+ <div class="card hero">
+  <div class="hero-copy"><span class="eyebrow">NBITS · Academic integrity</span><h1>Original work starts with a clear check.</h1><p>Review text against local references, public web pages and accessible academic sources in one place.</p>
+   <div class="hero-actions"><button class="btn w" onclick="go('check')">Start a plagiarism check</button><span class="hero-note">PDF, DOCX and TXT supported</span></div>
+  </div>
+  <div class="hero-meta"><span>Source coverage</span><strong>LOCAL · WEB · ACADEMIC</strong></div>
+ </div>
+ <div class="grid g4" id="stats"></div>
+ <div class="card" style="margin-top:18px"><h2>Recent plagiarism checks</h2><div class="tw"><table><thead><tr><th>Document</th><th>Date</th><th>Similarity</th><th>Status</th></tr></thead><tbody id="recent"></tbody></table></div></div>
+</section>
+
+<section class="view" id="check">
+ <h1>Check Plagiarism</h1><p class="sub">Paste text or upload a PDF, DOCX or TXT file. The content is checked against your local reference library, public web pages and accessible academic full text.</p>
+ <div class="card"><div class="tabs"><button class="on" data-m="text">Paste text</button><button data-m="file">Upload file</button></div>
+  <textarea id="ta" style="min-height:260px" placeholder="Paste the text you want to check…"></textarea>
+  <div class="drop" id="da" style="display:none"><div class="drop-icon" aria-hidden="true">+</div><b>Drop a file or click to browse</b><div class="sub" style="margin:4px 0 0">PDF, DOCX or TXT</div><div id="na" style="margin-top:8px;color:var(--p);font-weight:600"></div></div>
+  <input type="file" id="fa" accept=".pdf,.docx,.txt" hidden>
+  <div class="scan-stage" id="scanVisual" role="status" aria-live="polite" aria-hidden="true">
+   <div class="scan-copy">
+    <div class="scan-heading"><strong>Scanning resources</strong><span class="scan-percent" id="scanPercent">0%</span></div>
+    <p>Searching your text against the reference library and available online sources…</p>
+    <div class="scan-track" id="scanBar" role="progressbar" aria-label="Scan progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="scan-progress" id="scanProgress"></div></div>
+   </div>
+  </div>
+  <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap"><button class="btn" id="run">Scan for plagiarism</button><button class="btn o" id="clr">Clear</button></div>
+  <p id="err" style="color:var(--bad);font-weight:600;margin-bottom:0"></p></div>
+ <div class="card" style="margin-top:18px">
+  <h2>Local reference library</h2>
+  <p style="color:var(--mute);font-size:13.5px;line-height:1.6">Add PDF, DOCX or TXT documents to include them in this and future plagiarism checks. They are stored in the local database.</p>
+  <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><input type="file" id="rf" accept=".pdf,.docx,.txt" style="max-width:320px"><button class="btn" id="ra" type="button">Add reference document</button><span id="rmv" role="status" style="color:var(--ok);font-weight:600"></span></div>
+  <div id="rl" style="margin-top:14px"></div>
+ </div>
+</section>
+
+<section class="view" id="results"><div id="resBody"></div></section>
+
+<section class="view" id="hist">
+ <h1>Scan History</h1><p class="sub">Previously checked documents.</p>
+ <div class="card"><input type="text" id="q" placeholder="Search documents…" style="margin-bottom:12px"><div class="tw"><table><thead><tr><th>Document</th><th>Date</th><th>Words</th><th>Similarity</th><th>Status</th></tr></thead><tbody id="hb"></tbody></table></div></div>
+</section>
+
+<section class="view" id="admin">
+ <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap">
+  <div><h1>Admin dashboard</h1><p class="sub">Run a plagiarism scan and review a clear report of matching passages and sources.</p></div>
+  <button class="btn o" id="adminLogout" type="button">Admin logout</button>
+ </div>
+ <details class="card" style="margin-bottom:18px"><summary style="cursor:pointer;font-weight:600;color:var(--gold-light)">Change admin password</summary>
+  <form id="changePasswordForm" style="margin-top:18px">
+   <div class="grid g2"><div><label for="currentPassword">Current password</label><input id="currentPassword" type="password" autocomplete="current-password" required></div>
+    <div><label for="newPassword">New password (12–128 characters)</label><input id="newPassword" type="password" minlength="12" maxlength="128" autocomplete="new-password" required></div></div>
+   <button class="btn" type="submit" id="changePasswordButton" style="margin-top:14px">Update password</button>
+   <span id="changePasswordStatus" role="status" aria-live="polite" style="margin-left:10px;color:var(--mute)"></span>
+  </form>
+ </details>
+ <div class="grid g4" id="adminStats"></div>
+ <div class="card" style="margin-top:18px">
+  <h2>Admin plagiarism scanner</h2>
+  <p class="sub">Upload a PDF, DOCX or TXT file, or paste text. The generated report highlights matching passages and their sources.</p>
+  <label for="adminScanFile">Upload document</label>
+  <input type="file" id="adminScanFile" accept=".pdf,.docx,.txt">
+  <p id="adminScanFileStatus" role="status" style="color:var(--mute);margin:8px 0 12px"></p>
+  <label for="adminScanText">Or paste document text</label>
+  <textarea id="adminScanText" style="min-height:180px" placeholder="Paste at least 8 words to scan…"></textarea>
+  <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px">
+   <button class="btn" type="button" id="adminRunScan">Scan and create report</button>
+   <span id="adminScanStatus" role="status" aria-live="polite" style="color:var(--mute)"></span>
+  </div>
+  <div id="adminScanResult" style="margin-top:16px"></div>
+ </div>
+ <div class="card" style="margin-top:18px">
+  <h2>All submissions</h2>
+  <input type="text" id="adminSearch" placeholder="Search documents…">
+  <div class="tw" style="margin-top:12px"><table><thead><tr><th>Document</th><th>Date</th><th>Words</th><th>Similarity</th><th>Status</th><th>Report</th></tr></thead><tbody id="adminRows"></tbody></table></div>
+  <p id="adminError" role="status" style="color:var(--bad)"></p>
+ </div>
+</section>
+
+<section class="view" id="contact">
+ <h1>Contact us</h1><p class="sub">Need help revising content? Send the team a request and we’ll follow up using your contact details.</p>
+ <form class="card" id="contactForm">
+  <div class="grid g2">
+   <div><label for="contactName">Your name</label><input id="contactName" name="name" type="text" maxlength="120" autocomplete="name" required></div>
+   <div><label for="contactEmail">Email address</label><input id="contactEmail" name="email" type="email" maxlength="254" autocomplete="email" required></div>
+  </div>
+  <div style="margin-top:16px"><label for="contactDocument">Document name (optional)</label><input id="contactDocument" name="document" type="text" maxlength="200"></div>
+  <div style="margin-top:16px"><label for="contactMessage">How can we help?</label><textarea id="contactMessage" name="message" maxlength="5000" minlength="10" required placeholder="Describe the content you’d like help with. Please don’t include confidential information."></textarea></div>
+  <div style="display:flex;align-items:center;gap:14px;margin-top:16px;flex-wrap:wrap"><button class="btn" id="contactSubmit" type="submit">Send request</button><span id="contactStatus" role="status" aria-live="polite"></span></div>
+ </form>
+</section>
+
+<section class="view" id="about">
+ <h1>About</h1><p class="sub">Project information</p>
+ <div class="grid g2">
+  <div class="card lift"><h2>PlagiaScan</h2><p style="line-height:1.7;color:var(--mute)">An API-based plagiarism checker. Upload a document or paste text and it is scanned against online sources, returning a similarity percentage and the matching content.</p></div>
+  <div class="card lift"><h2>How it works</h2><p style="line-height:1.8;color:var(--mute)">1. Text is extracted from PDF, DOCX or TXT.<br>2. The text is sent to the scan API.<br>3. The API returns matching passages, sources and scores.<br>4. Matches are highlighted and a report is generated.</p></div>
+  <div class="card lift"><h2>Features</h2><p style="line-height:1.8;color:var(--mute)">Text input · File upload · Similarity score · Source matching · Sentence highlighting · Report generation</p></div>
+ </div>
+</section>
+</main>
+<footer class="site-footer">
+ <span>© 2026 NBITS Solutions Pvt Ltd. All rights reserved.</span>
+ <div class="footer-links"><span>Privacy</span><span>Terms</span><span>Role plagiarism checker</span></div>
+</footer>
+
+<div class="modal" id="rm"><div class="card"><div id="rb"></div><div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap" class="noprint"><button class="btn" id="cp">Copy report</button><button class="btn o" onclick="window.print()">Print / Save PDF</button><button class="btn o" onclick="$('rm').classList.remove('on')">Close</button></div></div></div>
+
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let hist=[];
+let cur=null;
+let scanTimer=null;
+let reportClipboardOverride=null;
+const status=s=>s<20?['Original','t-ok']:s<40?['Review','t-w']:['Flagged','t-b'];
+const tag=s=>{const[a,b]=status(s);return `<span class="tag ${b}">${a}</span>`};
+const rowsHtml=(l,w)=>!l.length?'<tr><td colspan="5" style="text-align:center;color:var(--mute);padding:30px">No documents checked yet</td></tr>':l.map((r,i)=>`<tr><td><b>${esc(r.n)}</b></td><td>${r.d}</td>${w?`<td>${r.w}</td>`:''}<td><div style="display:flex;gap:8px;align-items:center"><div class="bar"><i style="width:${r.s}%"></i></div>${r.s}%</div></td><td>${tag(r.s)}</td></tr>`).join('');
+function render(){
+ const n=hist.length,avg=n?Math.round(hist.reduce((a,b)=>a+b.s,0)/n):0,fl=hist.filter(h=>h.s>=40).length;
+ const st=[['01',n,'Documents checked'],['02',avg+'%','Average similarity'],['03',fl,'Documents flagged'],['04',n-fl,'Documents cleared']];
+ $('stats').innerHTML=st.map(x=>`<div class="card stat lift"><div class="ico">${x[0]}</div><b>${x[1]}</b><span>${x[2]}</span></div>`).join('');
+ $('recent').innerHTML=rowsHtml(hist.slice(0,5),false);
+ filterHist();
+
+}
+function filterHist(){const q=$('q').value.toLowerCase();$('hb').innerHTML=rowsHtml(hist.filter(h=>h.n.toLowerCase().includes(q)),true)}
+$('q').oninput=filterHist;
+function go(v){document.querySelectorAll('.view').forEach(e=>e.classList.toggle('on',e.id===v));document.querySelectorAll('.nav').forEach(b=>b.classList.toggle('on',b.dataset.v===v));const adminView=v==='admin',authView=v==='authPage';$('topNav').style.display=adminView||authView?'none':'';$('exitAdmin').style.display=adminView?'':'none';scrollTo(0,0)}
+document.querySelectorAll('.nav').forEach(b=>b.onclick=()=>go(b.dataset.v));
+document.querySelectorAll('[data-auth-route]').forEach(button=>button.onclick=()=>location.assign(button.dataset.authRoute));
+$('exitAdmin').onclick=()=>go('dash');
+let logoClicks=0,logoClickReset=null;
+const logo=document.querySelector('.brand-logo');logo.style.cursor='pointer';logo.title='Click five times to open the admin dashboard';
+logo.onclick=()=>{
+ logoClicks++;window.clearTimeout(logoClickReset);
+ if(logoClicks>=5){logoClicks=0;location.assign('/admin/login');return}
+ logoClickReset=window.setTimeout(()=>{logoClicks=0},2500)
+};
+
+const sents=t=>(t.replace(/\s+/g,' ').match(/[^.!?]+[.!?]*/g)||[]).map(s=>s.trim()).filter(s=>s.split(' ').length>2);
+let docName='Pasted_text.txt';
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));const f=b.dataset.m==='file';$('ta').style.display=f?'none':'';$('da').style.display=f?'':'none'});
+const dz=$('da');dz.onclick=()=>$('fa').click();
+dz.ondragover=e=>{e.preventDefault();dz.classList.add('over')};dz.ondragleave=()=>dz.classList.remove('over');
+dz.ondrop=e=>{e.preventDefault();dz.classList.remove('over');load(e.dataTransfer.files[0])};
+$('fa').onchange=()=>load($('fa').files[0]);
+async function extract(f){
+ const fd=new FormData();fd.append('file',f);
+ let r;try{r=await fetch(base()+'/extract',{method:'POST',headers:hdr(),body:fd})}catch(e){throw new Error('server not reachable')}
+ const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||'status '+r.status);return j.text}
+async function load(f){if(!f)return;$('na').textContent='Reading '+f.name+'…';
+ try{const t=await extract(f);$('ta').value=t;docName=f.name;$('na').textContent='✔ '+f.name+' ('+t.split(/\s+/).length+' words)'}
+ catch(e){$('na').textContent='Could not read file: '+e.message}}
+$('clr').onclick=()=>{$('ta').value='';$('na').textContent='';$('err').textContent='';docName='Pasted_text.txt'};
+const cfg=()=>{try{return JSON.parse(localStorage.getItem('ps_cfg')||'{}')}catch(e){return{}}};
+const norm=j=>({...j,sim:Math.max(0,Math.min(100,Math.round(+(j.similarity??j.overall??0)||0))),out:(j.matches||[]).map(m=>({s:String(m.text||m.sentence||''),src:String(m.source||m.source_title||'Unknown source'),url:String(m.url||m.source_url||''),type:String(m.source_type||'web'),sc:Math.round(+(m.score??m.similarity??0)||0)})).filter(m=>m.s)});
+const base=()=>(cfg().url||'').replace(/\/+$/,'');
+const hdr=()=>{const k=cfg().key;return k?{Authorization:'Bearer '+k}:{}};
+async function updateAccountNavigation(){
+ try{
+  const response=await fetch(base()+'/api/auth/session',{headers:hdr()});
+  const data=await response.json().catch(()=>({}));
+  const signedIn=response.ok&&data.authenticated&&data.user?.role==='user';
+  $('userLogout').style.display=signedIn?'':'none';
+ }catch(error){$('userLogout').style.display='none'}
+}
+$('userLogout').onclick=async()=>{
+ const button=$('userLogout');button.disabled=true;
+ try{
+  const response=await fetch(base()+'/api/auth/logout',{method:'POST',headers:hdr()});
+  const data=await response.json().catch(()=>({}));
+  if(!response.ok)throw new Error(data.error||'Could not log out.');
+  location.assign('/');
+ }catch(error){button.disabled=false;alert(error.message||'Could not log out.')}
+};
+function renderAuthPage(kind){
+ go('authPage');
+ const admin=kind==='admin-login',register=kind==='register';
+ $('authEyebrow').textContent=admin?'Administrator access':'PlagiaScan account';
+ $('authTitle').textContent=admin?'Admin login':register?'Create account':'User login';
+ $('authDescription').textContent=admin?'Sign in with an administrator account to open the admin dashboard.':register?'Create a standard user account. Public registration cannot create admin accounts.':'Sign in to your user dashboard.';
+ $('authMessage').textContent=new URLSearchParams(location.search).has('passwordChanged')?'Password changed. Sign in with your new password.':'';
+ $('authMessage').style.color='var(--ok)';
+ $('authForm').innerHTML=(register?'<label for="authUsername">Username</label><input id="authUsername" name="username" type="text" minlength="3" maxlength="32" autocomplete="username" required><label for="authEmail" style="margin-top:14px">Email address</label><input id="authEmail" name="email" type="email" maxlength="254" autocomplete="email" required>':'<label for="authIdentifier">'+(admin?'Admin email or username':'Email or username')+'</label><input id="authIdentifier" name="identifier" type="text" maxlength="254" autocomplete="username" required>')+
+  '<label for="authPassword" style="margin-top:14px">'+(register?'Password (12–128 characters)':'Password')+'</label><div style="display:flex;gap:8px;align-items:center"><input id="authPassword" name="password" type="password" '+(register?'minlength="12" maxlength="128" autocomplete="new-password"':'maxlength="128" autocomplete="current-password"')+' required><button class="btn o" type="button" id="toggleAuthPassword" aria-label="Show password" style="white-space:nowrap;padding:11px 12px">Show</button></div><button class="btn" type="submit" id="authSubmit" style="margin-top:18px;width:100%">'+(register?'Create account':'Sign in')+'</button>';
+ $('authLinks').innerHTML=admin?'<a href="/login" style="color:var(--gold-light)">User login</a>':register?'<a href="/login" style="color:var(--gold-light)">Already registered? Log in</a>':'<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap"><a href="/register" style="color:var(--gold-light)">Create an account</a><a href="/admin/login" style="color:var(--gold-light)">Admin login</a></div>';
+ $('toggleAuthPassword').onclick=()=>{
+  const field=$('authPassword'),show=field.type==='password';
+  field.type=show?'text':'password';
+  $('toggleAuthPassword').textContent=show?'Hide':'Show';
+  $('toggleAuthPassword').setAttribute('aria-label',show?'Hide password':'Show password');
+ };
+ $('authForm').onsubmit=async event=>{
+  event.preventDefault();
+  const button=$('authSubmit');button.disabled=true;button.innerHTML='<span class="spin"></span>'+(register?'Creating account…':'Signing in…');$('authMessage').textContent='';
+  let endpoint,body;
+  if(register){
+   endpoint='/api/auth/register';
+   body={username:$('authUsername').value.trim(),email:$('authEmail').value.trim(),password:$('authPassword').value};
+  }else{
+   endpoint=admin?'/api/auth/admin-login':'/api/auth/login';
+   body={identifier:$('authIdentifier').value.trim(),password:$('authPassword').value};
+  }
+  try{
+   const response=await fetch(base()+endpoint,{method:'POST',headers:{'Content-Type':'application/json',...hdr()},body:JSON.stringify(body)});
+   const data=await response.json().catch(()=>({}));
+   if(!response.ok)throw new Error(data.error||'Authentication failed.');
+   location.assign(data.user.role==='admin'?'/admin/dashboard':'/dashboard');
+  }catch(error){$('authMessage').textContent=error.message||'Authentication failed.'}
+  finally{button.disabled=false;button.textContent=register?'Create account':'Sign in'}
+ };
+}
+function initializePageRoute(){
+ const path=location.pathname;
+ updateAccountNavigation();
+ if(path==='/login'||path==='/register'||path==='/admin/login'){
+  renderAuthPage(path==='/admin/login'?'admin-login':path==='/register'?'register':'login');
+  return;
+ }
+ render();showRes();
+ if(path==='/admin/dashboard'){go('admin');loadAdminDashboard();return}
+ if(path==='/dashboard'){go('dash');sync();loadReferences();return}
+ sync();
+ loadReferences();
+}
+async function sync(){try{const r=await fetch(base()+'/history',{headers:hdr()});if(r.ok){hist=(await r.json()).map(x=>({n:x.name,d:x.created,w:x.words,s:x.similarity}));render()}}catch(e){}}
+let adminSubmissions=[];
+async function loadAdminDashboard(){
+ $('adminError').textContent='Loading dashboard…';
+ try{
+  const [statsResponse,historyResponse]=await Promise.all([
+   fetch(base()+'/stats',{headers:hdr()}),fetch(base()+'/history',{headers:hdr()})
+  ]);
+  const stats=await statsResponse.json(),history=await historyResponse.json();
+  if(!statsResponse.ok)throw new Error(stats.error||'Could not load dashboard statistics.');
+  if(!historyResponse.ok)throw new Error(history.error||'Could not load submissions.');
+  adminSubmissions=history;
+  const cards=[['01',stats.total,'Documents checked'],['02',stats.average+'%','Average similarity'],['03',stats.flagged,'Documents flagged'],['04',stats.cleared,'Documents cleared']];
+  $('adminStats').innerHTML=cards.map(x=>`<div class="card stat lift"><div class="ico">${x[0]}</div><b>${x[1]}</b><span>${x[2]}</span></div>`).join('');
+  filterAdminSubmissions();$('adminError').textContent=''
+ }catch(error){$('adminRows').innerHTML='<tr><td colspan="6" style="color:var(--bad);padding:20px">Could not load dashboard data.</td></tr>';$('adminError').textContent=error.message||'Could not load dashboard data.'}
+}
+function filterAdminSubmissions(){
+ const query=$('adminSearch').value.trim().toLowerCase();
+ const rows=adminSubmissions.filter(item=>item.name.toLowerCase().includes(query));
+ $('adminRows').innerHTML=rows.length?rows.map(item=>`<tr><td><b>${esc(item.name)}</b></td><td>${esc(item.created)}</td><td>${item.words}</td><td>${item.similarity}%</td><td>${tag(item.similarity)}</td><td><button class="btn o" data-admin-report="${item.id}" style="padding:7px 10px">View report</button></td></tr>`).join(''):'<tr><td colspan="6" style="text-align:center;color:var(--mute);padding:24px">No submissions found</td></tr>'
+}
+$('adminSearch').oninput=filterAdminSubmissions;
+$('adminLogout').onclick=async()=>{
+ try{
+  const response=await fetch(base()+'/api/auth/logout',{method:'POST',headers:hdr()});
+  const data=await response.json().catch(()=>({}));
+  if(!response.ok)throw new Error(data.error||'Could not log out.');
+  location.assign('/admin/login');
+ }catch(error){$('adminError').textContent=error.message||'Could not log out.'}
+};
+$('changePasswordForm').onsubmit=async event=>{
+ event.preventDefault();
+ const button=$('changePasswordButton'),status=$('changePasswordStatus');
+ button.disabled=true;button.innerHTML='<span class="spin"></span>Updating…';status.textContent='';
+ try{
+  const response=await fetch(base()+'/api/auth/password',{method:'POST',headers:{'Content-Type':'application/json',...hdr()},body:JSON.stringify({current_password:$('currentPassword').value,new_password:$('newPassword').value})});
+  const data=await response.json().catch(()=>({}));
+  if(!response.ok)throw new Error(data.error||'Could not change password.');
+  location.assign('/admin/login?passwordChanged=1');
+ }catch(error){status.textContent=error.message||'Could not change password.'}
+ finally{button.disabled=false;button.textContent='Update password'}
+};
+$('adminRows').onclick=e=>{
+ const button=e.target.closest('[data-admin-report]');
+ if(button)showAdminReport(button.dataset.adminReport)
+};
+async function showAdminReport(id){
+ try{
+  const response=await fetch(base()+'/history/'+id,{headers:hdr()}),item=await response.json();
+  if(!response.ok)throw new Error(item.error||'Could not load report.');
+  const result=item.result||{},matches=result.matches||[];
+  const clipboardText=`PLAGIARISM ANALYSIS REPORT\nDate: ${item.created}\nDocument: ${item.name}\nSimilarity: ${item.similarity}%\nWords checked: ${item.words}\n\n`+matches.map((match,index)=>`${index+1}. "${match.text}"\nSource: ${match.source}${match.url?' ('+match.url+')':''} - ${match.score}%`).join('\n');
+  reportClipboardOverride=clipboardText;
+  $('rb').innerHTML=`<h2 style="font-size:22px">Detailed Plagiarism Report</h2><p class="sub" style="margin-bottom:14px">${esc(item.created)} · ${esc(item.name)}</p>
+   <div style="display:flex;gap:14px;align-items:center;margin-bottom:14px"><b style="font-size:40px;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent">${item.similarity}%</b>${tag(item.similarity)}</div>
+   <p style="color:var(--mute)">${matches.length} matching passage(s) across ${item.words} words.</p>`+
+   (matches.map((match,index)=>`<div class="match"><b>${index+1}. “${esc(match.text||'')}”</b><small>Matched content: ${esc(match.source_text||'')}<br>Source: ${esc(match.source||'Unknown source')}${match.url?' · '+esc(match.url):''} · ${Math.round(Number(match.score)||0)}% match</small></div>`).join('')||'<p class="sub">No matching passages were found.</p>');
+  $('rm').classList.add('on');
+ }catch(error){$('adminError').textContent=error.message||'Could not load report.'}
+}
+let adminScanName='Admin_scan.txt';
+let latestAdminScan=null;
+$('adminScanFile').onchange=async()=>{
+ const file=$('adminScanFile').files[0];if(!file)return;
+ $('adminScanFileStatus').textContent='Reading '+file.name+'…';
+ try{
+  $('adminScanText').value=await extract(file);
+  adminScanName=file.name;
+  $('adminScanFileStatus').textContent='Ready: '+file.name;
+  $('adminScanStatus').textContent='';
+  $('adminScanResult').innerHTML='';
+ }catch(error){$('adminScanFileStatus').textContent='Could not read file: '+error.message}
+};
+$('adminRunScan').onclick=async()=>{
+ const text=$('adminScanText').value.trim();
+ if(text.split(/\s+/).filter(Boolean).length<8){$('adminScanStatus').textContent='Provide at least 8 words to scan.';return}
+ const button=$('adminRunScan');button.disabled=true;$('adminScanStatus').textContent='Scanning sources…';
+ try{
+  const result=await scan(text,adminScanName);
+  latestAdminScan={...result,A:text,words:text.split(/\s+/).filter(Boolean).length,name:adminScanName,date:new Date().toISOString().slice(0,10)};
+  renderAdminScanResult(latestAdminScan);
+  $('adminScanStatus').textContent='Scan complete. The report is ready.';
+  await loadAdminDashboard();
+ }catch(error){$('adminScanStatus').textContent=error.message||'Could not scan this document.'}
+ finally{button.disabled=false}
+};
+function renderAdminScanResult(result){
+ const matches=result.out||[];
+ $('adminScanResult').innerHTML=`<div class="card" style="margin-top:8px;border-color:rgba(216,191,123,.3)">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap">
+   <div><h2 style="margin-bottom:6px">Scan report</h2><p class="sub" style="margin:0">${esc(result.name)} · ${result.words} words · ${esc(result.date)}</p></div>
+   <div style="display:flex;align-items:center;gap:10px"><b style="font-size:30px;color:var(--gold-light)">${result.sim}%</b>${tag(result.sim)}</div>
+  </div>
+  <div class="match" style="margin-top:16px"><b>${matches.length} matching passage(s)</b><small>Review the passages and source details below. Similarity indicates overlap; it does not determine whether content is properly cited.</small></div>
+  ${matches.map((match,index)=>`<div class="match"><b><span style="color:var(--gold-light)">Passage ${index+1}</span> · “${esc(match.s)}”</b><small><b>Source:</b> ${esc(match.src)}${match.url?' · '+esc(match.url):''}<br><b>Match:</b> ${match.sc}%</small></div>`).join('')||'<p class="sub" style="margin:8px 0">No matching passages were found.</p>'}
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px"><button class="btn o" type="button" id="adminGenerateScanReport">Open printable detailed report</button></div>
+ </div>`;
+ $('adminGenerateScanReport').onclick=()=>showAdminScanReport(result);
+}
+function showAdminScanReport(result){
+ reportClipboardOverride=`PLAGIASCAN ADMIN REPORT\nDate: ${result.date}\nDocument: ${result.name}\nSimilarity: ${result.sim}%\nWords checked: ${result.words}\nMatching passages: ${result.out.length}\n\nWHERE TO REVIEW\n`+(result.out.map((match,index)=>`${index+1}. "${match.s}"\nSource: ${match.src}${match.url?' ('+match.url+')':''} - ${match.sc}%`).join('\n\n')||'No matching passages were found.');
+ $('rb').innerHTML=`<h2 style="font-size:22px">Admin Plagiarism Report</h2><p class="sub" style="margin-bottom:14px">${esc(result.date)} · ${esc(result.name)}</p>
+  <div style="display:flex;gap:14px;align-items:center;margin-bottom:14px"><b style="font-size:40px;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent">${result.sim}%</b>${tag(result.sim)}</div>
+  <p style="color:var(--mute)">${result.out.length} passage(s) to review across ${result.words} words. Each listed passage identifies a location to consider revising.</p>`+
+  (result.out.map((match,index)=>`<div class="match"><b>Review target ${index+1}: “${esc(match.s)}”</b><small>Source: ${esc(match.src)}${match.url?' · '+esc(match.url):''} · ${match.sc}% match</small></div>`).join('')||'<p class="sub">No matching passages were found.</p>');
+ $('rm').classList.add('on');
+}
+async function scan(text,name){
+ let r;try{r=await fetch(base()+'/scan',{method:'POST',headers:{'Content-Type':'application/json',...hdr()},body:JSON.stringify({text,name})})}
+ catch(e){throw new Error('Could not reach the server. Start the backend (python app.py) and open http://localhost:5000.')}
+ const j=await r.json().catch(()=>({}));
+ if(!r.ok)throw new Error(j.error||'Server returned status '+r.status);return norm(j)}
+function hl(text,list){let h=esc(text);list.forEach(m=>{const e=esc(m.s);h=h.split(e).join(`<mark title="${m.sc}% match">${e}</mark>`)});return h}
+function setScanProgress(value){const p=Math.round(value);$('scanProgress').style.width=p+'%';$('scanPercent').textContent=p+'%';$('scanBar').setAttribute('aria-valuenow',String(p))}
+$('run').onclick=async()=>{
+ const A=$('ta').value.trim();
+ if(A.split(/\s+/).length<8){$('err').textContent='Please enter or upload at least a few sentences.';return}
+ $('err').textContent='';$('run').disabled=true;$('run').innerHTML='<span class="spin"></span>Scanning sources…';
+ setScanProgress(0);let progress=0;scanTimer=window.setInterval(()=>{progress=Math.min(99,progress+Math.max(.5,(99-progress)*.04));setScanProgress(progress)},300);
+ $('scanVisual').classList.add('active');$('scanVisual').setAttribute('aria-hidden','false');
+ try{const r=await scan(A,docName);
+  cur={...r,A,sa:sents(A),words:A.split(/\s+/).length,name:docName,date:new Date().toISOString().slice(0,10)};
+  window.clearInterval(scanTimer);scanTimer=null;setScanProgress(100);
+  await new Promise(resolve=>setTimeout(resolve,300));
+  showRes();go('results');sync()}
+ catch(e){$('err').textContent=(e&&e.message)||'Scan failed. Please try again.'}
+ finally{window.clearInterval(scanTimer);scanTimer=null;$('run').disabled=false;$('run').textContent='Scan for plagiarism';$('scanVisual').classList.remove('active');$('scanVisual').setAttribute('aria-hidden','true')}};
+function showRes(){
+ if(!cur){ $('resBody').innerHTML='<h1>Results</h1><p class="sub">No analysis yet.</p><div class="card" style="text-align:center;padding:50px"><div style="font-family:Cinzel,Georgia,serif;font-size:42px;color:var(--gold)">01</div><p class="sub">Run a check to see your similarity results here.</p><button class="btn" onclick="go(\'check\')">Check plagiarism</button></div>';return}
+ const s=cur.sim,col=s<20?'#10b981':s<40?'#f59e0b':'#ef4444';
+ const nsrc=new Set(cur.out.map(m=>m.src)).size;
+ $('resBody').innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px"><div><h1>Results</h1><p class="sub">${esc(cur.name)}</p></div></div>
+ <div class="grid g4" style="margin-bottom:18px">
+  <div class="card"><div class="gauge" id="gg" style="background:conic-gradient(${col} 0%,var(--line) 0)"><div><p style="margin:0"><b style="color:${col}">${s}%</b><br><span>similarity</span></p></div></div><p style="text-align:center;margin:14px 0 0">${tag(s)}</p></div>
+  <div class="card stat"><div class="ico">01</div><b>${cur.out.length}</b><span>Matching passages</span></div>
+  <div class="card stat"><div class="ico">02</div><b>${cur.sources_checked??nsrc}</b><span>Sources checked</span><small style="color:var(--mute)">Web: ${cur.source_counts?.web??0} · Academic: ${cur.source_counts?.academic??0} · Local: ${cur.source_counts?.local??0}</small></div>
+  <div class="card stat"><div class="ico">03</div><b>${cur.words}</b><span>Words checked</span></div></div>
+ ${(cur.warnings||[]).length?`<div class="card" style="margin-bottom:18px;border-left:4px solid var(--warn)"><h2>Coverage notes</h2><ul style="color:var(--mute);line-height:1.7;margin-bottom:0">${cur.warnings.map(w=>`<li>${esc(w)}</li>`).join('')}</ul></div>`:''}
+ <form class="card" id="modifyRequestForm" style="margin-top:18px">
+  <h2 class="modify-heading">Want to modify <span>your document?</span></h2>
+  <p class="sub">Fill in your details and request document revision through WhatsApp. Your document text is not sent.</p>
+  <div class="grid g2">
+   <div><label for="modifyName">Your name</label><input id="modifyName" name="name" type="text" maxlength="120" autocomplete="name" required></div>
+   <div><label for="modifyEmail">Email address</label><input id="modifyEmail" name="email" type="email" maxlength="254" autocomplete="email" required></div>
+  </div>
+  <div style="margin-top:14px"><label for="modifyPhone">Phone number</label><input id="modifyPhone" name="phone" type="tel" maxlength="24" autocomplete="tel" required></div>
+  <div style="margin-top:14px"><label for="modifyMessage">How can we help?</label><textarea id="modifyMessage" name="message" minlength="10" maxlength="1200" required placeholder="Describe the changes or assistance you need."></textarea></div>
+  <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:14px"><button class="btn" type="submit">Prepare WhatsApp message</button><a class="btn o" id="whatsappRequestLink" href="#" target="_blank" rel="noopener noreferrer" style="display:none;text-decoration:none">Open WhatsApp</a></div>
+  <p id="modifyRequestStatus" role="status" aria-live="polite" style="color:var(--mute);margin-bottom:0"></p>
+ </form>`;
+ requestAnimationFrame(()=>setTimeout(()=>{$('gg').style.background=`conic-gradient(${col} ${s}%,var(--line) 0)`},60));
+}
+$('resBody').onsubmit=e=>{
+ if(e.target.id!=='modifyRequestForm')return;
+ e.preventDefault();
+ const name=$('modifyName').value.trim(),email=$('modifyEmail').value.trim();
+ const phone=$('modifyPhone').value.trim(),message=$('modifyMessage').value.trim();
+ const whatsappMessage=[
+  'Hello, I would like help modifying my document.',
+  `Name: ${name}`,`Email: ${email}`,`Phone: ${phone}`,
+  `Document: ${cur.name}`,`Request: ${message}`
+ ].join('\n');
+ $('whatsappRequestLink').href='https://wa.me/918897643625?text='+encodeURIComponent(whatsappMessage);
+ $('whatsappRequestLink').style.display='inline-flex';
+ $('modifyRequestStatus').textContent='Your message is ready. Open WhatsApp and press Send to contact us.';
+};
+function reportText(){return `PLAGIARISM ANALYSIS REPORT\nDate: ${cur.date}\nDocument: ${cur.name}\n\nSimilarity: ${cur.sim}% (${status(cur.sim)[0]})\nWords checked: ${cur.words}\nMatching passages: ${cur.out.length}\n\nMATCHES\n`+(cur.out.map((m,i)=>`${i+1}. "${m.s}"\n   Source: ${m.src}${m.url?' ('+m.url+')':''} - ${m.sc}% · ${m.type||"web"}`).join('\n')||'None')}
+function report(){
+ reportClipboardOverride=null;
+ $('rb').innerHTML=`<h2 style="font-size:22px">Plagiarism Analysis Report</h2><p class="sub" style="margin-bottom:14px">${cur.date} · ${esc(cur.name)}</p>
+ <div style="display:flex;gap:14px;align-items:center;margin-bottom:14px"><b style="font-size:40px;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent">${cur.sim}%</b>${tag(cur.sim)}</div>
+ <p style="color:var(--mute)">${cur.out.length} matching passage(s) found across ${cur.words} words.</p>`+cur.out.map((m,i)=>`<div class="match"><b>${i+1}. “${esc(m.s)}”</b><small>${esc(m.src)}${m.url?' · '+esc(m.url):''} · ${m.sc}%</small></div>`).join('');
+ $('rm').classList.add('on')}
+$('cp').onclick=async()=>{try{await navigator.clipboard.writeText(reportClipboardOverride??reportText());$('cp').textContent='Copied ✔'}catch(e){$('cp').textContent='Copy not available'}setTimeout(()=>$('cp').textContent='Copy report',1800)};
+$('rm').onclick=e=>{if(e.target===$('rm'))$('rm').classList.remove('on')};
+
+async function loadReferences(){
+ try{
+  const response=await fetch(base()+'/reference-documents',{headers:hdr()});
+  const data=await response.json(); if(!response.ok) throw new Error(data.error||'Could not load library');
+  $('rl').innerHTML=data.length?data.map(d=>`<div class="match" style="display:flex;justify-content:space-between;gap:12px;align-items:center"><span><b>${esc(d.name)}</b><small>${d.words} words · added ${esc(d.created)}</small></span><button class="btn o" data-delete-ref="${d.id}" style="padding:7px 11px">Remove</button></div>`).join(''):'<p class="sub" style="margin:0">No reference documents have been added yet.</p>';
+ }catch(e){$('rl').textContent=e.message}
+}
+$('ra').onclick=async()=>{
+ const f=$('rf').files[0]; if(!f){$('rmv').textContent='Choose a PDF, DOCX or TXT file first.';return}
+ $('ra').disabled=true;$('rmv').textContent='Adding document…';
+ try{
+  const fd=new FormData();fd.append('file',f);
+  const response=await fetch(base()+'/reference-documents',{method:'POST',headers:hdr(),body:fd});
+  const data=await response.json();if(!response.ok)throw new Error(data.error||'Upload failed');
+  $('rmv').textContent='Added ✔';$('rf').value='';await loadReferences();
+ }catch(e){$('rmv').textContent=e.message}
+ $('ra').disabled=false;setTimeout(()=>$('rmv').textContent='',3500)
+};
+$('rl').onclick=async e=>{
+ const button=e.target.closest('[data-delete-ref]');if(!button)return;
+ if(!confirm('Remove this reference document from the local library?'))return;
+ try{
+  const response=await fetch(base()+'/reference-documents/'+button.dataset.deleteRef,{method:'DELETE',headers:hdr()});
+  const data=await response.json();if(!response.ok)throw new Error(data.error||'Delete failed');
+  await loadReferences();
+ }catch(err){$('rmv').textContent=err.message}
+};
+
+$('contactForm').onsubmit=async e=>{
+ e.preventDefault();
+ const submit=$('contactSubmit'),status=$('contactStatus');
+ submit.disabled=true;status.style.color='var(--mute)';status.textContent='Sending your request…';
+ try{
+  const response=await fetch(base()+'/contact',{method:'POST',headers:{'Content-Type':'application/json',...hdr()},body:JSON.stringify({
+   name:$('contactName').value.trim(),email:$('contactEmail').value.trim(),
+   document:$('contactDocument').value.trim(),message:$('contactMessage').value.trim()
+  })});
+  const data=await response.json().catch(()=>({}));
+  if(!response.ok)throw new Error(data.error||'Could not send your request.');
+  status.style.color='var(--ok)';status.textContent='Your request was sent. The team will follow up by email.';
+  $('contactForm').reset();
+ }catch(error){status.style.color='var(--bad)';status.textContent=error.message||'Could not send your request. Please try again.'}
+ finally{submit.disabled=false}
+};
+
+initializePageRoute();
+</script></body></html>
